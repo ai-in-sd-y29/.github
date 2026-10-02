@@ -1,6 +1,6 @@
 [Лекция 1. Введение в AI-инжиниринг: EJM, метрики, обзор стека](https://ai-in-sd-y29.github.io/.github/profile/lectures/1/)  
 [Лекция 2. Зоопарк моделей: типы, параметры, специализация](https://ai-in-sd-y29.github.io/.github/profile/lectures/2/)  
-Лекция 3. Как устроена LLM: трансформер, attention, токены, поверхностный взгляд на GPU  
+[Лекция 3. Как устроена LLM: трансформер, attention, токены, поверхностный взгляд на GPU](https://ai-in-sd-y29.github.io/.github/profile/lectures/3/)    
 Лекция 4. Промт-инжиниринг: паттерны, reasoning, мета-промптинг  
 Лекция 5. Кодинг-агенты: модель P.M.A., управление контекстом  
 Лекция 6. Spec-driven development: AGENTS.md, конституция, антипаттерны  
