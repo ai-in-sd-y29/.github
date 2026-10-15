@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Golos Text";src:url("fonts/GolosText-Regular.ttf") format("truetype");font-weight:400}
+@font-face{font-family:"Golos Text";src:url("fonts/GolosText-Medium.ttf") format("truetype");font-weight:500}
+@font-face{font-family:"Golos Text";src:url("fonts/GolosText-SemiBold.ttf") format("truetype");font-weight:600}
+@font-face{font-family:"Golos Text";src:url("fonts/GolosText-Bold.ttf") format("truetype");font-weight:700}
+@font-face{font-family:"Golos Text";src:url("fonts/GolosText-ExtraBold.ttf") format("truetype");font-weight:800}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+:root{--t-title:60px;--t-key:36px;--t-body:30px;--t-small:24px;--ac:#1A3FA0;--wr:#A3161B;--ac-t:#DCE5F8;--wr-t:#F8DEDC;--g:#F1F1F1;--ln:#C9C9C9;--x1:#2F5D62;--x2:#5E4470;--x3:#7A5A1F}
+html,body{margin:0;background:#fff;font-family:"Golos Text",system-ui,sans-serif;color:#111}
+a{color:var(--ac)}a:hover{color:#0F2A70}
+code{font-family:"JetBrains Mono",ui-monospace,monospace}
+</style>
+<script src="./lec.js"></script>
+</helmet>
+<x-import component-from-global-scope="deck-stage" from="./deck-stage.js" width="1920" height="1080" hint-size="100%,100%" data-uneditable="">
+
+<section data-label="01 Титул" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:100px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between" data-om-slide-id="e0011c45">
+<img src="assets/logo-itmo-black.svg" alt="ITMO" style="height:60px;align-self:flex-start">
+<div style="display:flex;flex-direction:column;gap:28px">
+<p style="margin:0;font-size:40px;font-weight:600;color:var(--ac)">Лекция 4</p>
+<h1 style="margin:0;font-size:136px;font-weight:800;letter-spacing:-0.035em;line-height:1">Промпт-инжиниринг</h1>
+<p style="margin:0;font-size:60px;font-weight:500;line-height:1.15">паттерны, reasoning, мета-промптинг</p>
+</div>
+<p style="margin:0;font-size:32px;color:#222">Дисциплина «Технологии ИИ в разработке ПО»</p>
+</section>
+
+<section data-label="02 План лекции" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="a7c368ff">
+<lec-chrome b="0"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">План лекции</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">90 минут, 11 частей; ширина сегмента — время</p>
+<div style="margin-top:96px;display:flex;gap:6px;height:96px;font-size:30px;font-weight:700">
+<div style="flex:4;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">0</div>
+<div style="flex:10;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">1</div>
+<div style="flex:8;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">2</div>
+<div style="flex:14;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">3</div>
+<div style="flex:9;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">4</div>
+<div style="flex:7;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">5</div>
+<div style="flex:7;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">6</div>
+<div style="flex:15;background:var(--ac);color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative"><span>7</span><span style="position:absolute;bottom:calc(100% + 12px);left:0;white-space:nowrap;font-size:24px;font-weight:600;color:var(--ac)">по вашей просьбе</span></div>
+<div style="flex:5;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">8</div>
+<div style="flex:8;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">9</div>
+<div style="flex:3;background:var(--ac-t);border-radius:12px;display:flex;align-items:center;justify-content:center">10</div>
+</div>
+<div style="margin-top:64px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,auto);grid-auto-flow:column;gap:20px 120px;font-size:30px">
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">0</b><span style="flex:1">Вступление</span><span style="color:#333">4 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">1</b><span style="flex:1">R.C.T.F. и STAR</span><span style="color:#333">10 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">2</b><span style="flex:1">Few-shot</span><span style="color:#333">8 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">3</b><span style="flex:1">Structured output</span><span style="color:#333">14 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">4</b><span style="flex:1">CoT</span><span style="color:#333">9 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">5</b><span style="flex:1">ReAct</span><span style="color:#333">7 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">6</b><span style="flex:1">Reasoning</span><span style="color:#333">7 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">7</b><span style="flex:1;font-weight:600">Код и C#</span><span style="color:#333">15 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">8</b><span style="flex:1">Мета-промптинг</span><span style="color:#333">5 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">9</b><span style="flex:1">Антипаттерны</span><span style="color:#333">8 мин</span></div>
+<div style="display:flex;gap:20px"><b style="width:48px;color:var(--ac)">10</b><span style="flex:1">Итоги</span><span style="color:#333">3 мин</span></div>
+</div>
+</section>
+
+<section data-label="03 Что такое промпт-инжиниринг" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="c14abadd">
+<lec-chrome b="0" n="0.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Что такое промпт-инжиниринг</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Промпт-инжиниринг — процесс написания эффективных инструкций для модели, чтобы она <b style="color:var(--ac)">стабильно</b> генерировала результат, соответствующий вашим требованиям.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35">Источник: OpenAI, Prompt engineering guide (перевод) — developers.openai.com/api/docs/guides/prompt-engineering</p>
+<p style="margin:64px 0 0;font-size:40px;font-weight:600">Промпт — это код: версии, тесты, регрессии</p>
+</section>
+
+<section data-label="04 Что мы знаем из лекции 3" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="f2ed5bb7">
+<lec-chrome b="0" n="0.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Что мы знаем из лекции 3</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Каждый паттерн сегодня объясняем через эти три факта.</p>
+<div style="margin-top:72px;display:grid;grid-template-columns:repeat(3,1fr);gap:40px">
+<div style="border:2px solid var(--ln);border-radius:28px;padding:48px 44px;display:flex;flex-direction:column;gap:32px"><lec-i n="arrowl" s="72" c="var(--ac)"></lec-i><p style="margin:0;font-size:32px;line-height:1.3">Модель смотрит только назад: что раньше в промпте, влияет на всё после</p></div>
+<div style="border:2px solid var(--ln);border-radius:28px;padding:48px 44px;display:flex;flex-direction:column;gap:32px"><lec-i n="counter" s="72" c="var(--ac)"></lec-i><p style="margin:0;font-size:32px;line-height:1.3">API не помнит разговор: весь промпт уходит в каждом запросе</p></div>
+<div style="border:2px solid var(--ln);border-radius:28px;padding:48px 44px;display:flex;flex-direction:column;gap:32px"><lec-i n="ucurve" s="72" c="var(--ac)"></lec-i><p style="margin:0;font-size:32px;line-height:1.3">Середина длинного контекста используется хуже</p></div>
+</div>
+</section>
+
+<section data-label="05 Три вопроса на сегодня" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="a010ec60">
+<lec-chrome b="0" n="0.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Три вопроса на сегодня</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Первые два — из ЛР1 и ЛР2, третий — ваш вопрос.</p>
+<div style="margin-top:72px;display:grid;grid-template-columns:repeat(3,1fr);gap:40px">
+<div style="border:2px solid var(--ln);border-radius:28px;padding:44px;display:flex;flex-direction:column;gap:28px"><span style="font-size:88px;font-weight:800;color:var(--ac);line-height:1">1</span><p style="margin:0;font-size:34px;font-weight:500;line-height:1.3">Как написать системный промпт, чтобы бот отвечал предсказуемо?</p></div>
+<div style="border:2px solid var(--ln);border-radius:28px;padding:44px;display:flex;flex-direction:column;gap:28px"><span style="font-size:88px;font-weight:800;color:var(--ac);line-height:1">2</span><p style="margin:0;font-size:34px;font-weight:500;line-height:1.3">Как получить от модели данные, которые код разберёт без ошибок?</p></div>
+<div style="border:2px solid var(--ln);border-radius:28px;padding:44px;display:flex;flex-direction:column;gap:28px"><span style="font-size:88px;font-weight:800;color:var(--ac);line-height:1">3</span><p style="margin:0;font-size:34px;font-weight:500;line-height:1.3">Как модель пишет код и почему он иногда не компилируется?</p></div>
+</div>
+</section>
+
+<section data-label="06 Разделитель 1" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:100px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center" data-om-slide-id="fa27e1c3">
+<lec-chrome b="1" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">1</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Структура промпта</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Кто отвечает, что вокруг, что сделать и в каком виде</p>
+</section>
+
+<section data-label="07 Плохой системный промпт" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="bffe8b77">
+<lec-chrome b="1" n="1.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Плохой системный промпт</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Всё, чего нет в промпте, модель додумает сама — каждый раз по-разному.</p>
+<div style="margin-top:64px;display:flex;gap:72px;align-items:flex-start">
+<lec-code k="s7" v="bad" style="flex:0 0 1000px"></lec-code>
+<div style="flex:1;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body)">
+<div style="display:flex;gap:18px;align-items:center"><lec-i n="q" s="40" c="var(--wr)"></lec-i><span>Кому отвечаем?</span></div>
+<div style="display:flex;gap:18px;align-items:center"><lec-i n="q" s="40" c="var(--wr)"></lec-i><span>Где читают ответ?</span></div>
+<div style="display:flex;gap:18px;align-items:center"><lec-i n="q" s="40" c="var(--wr)"></lec-i><span>Что делать с неясным вопросом?</span></div>
+<div style="display:flex;gap:18px;align-items:center"><lec-i n="q" s="40" c="var(--wr)"></lec-i><span>Какой длины ответ?</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="08 R.C.T.F." style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="b6192587">
+<lec-chrome b="1" n="1.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">R.C.T.F.</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Мнемоника из сообщества, а не стандарт; ценность — в чек-листе.</p>
+<div style="margin-top:48px;display:flex;flex-direction:column;font-size:28px">
+<div style="display:grid;grid-template-columns:96px 260px 1fr 1fr;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span></span><span>Буква</span><span>Вопрос</span><span>Куда в запросе</span></div>
+<div style="display:grid;grid-template-columns:96px 260px 1fr 1fr;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span style="width:76px;height:76px;box-sizing:border-box;border:3px solid var(--ac);color:var(--ac);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800">R</span><b>Role</b><span>кто отвечает?</span><span>системный промпт</span></div>
+<div style="display:grid;grid-template-columns:96px 260px 1fr 1fr;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span style="width:76px;height:76px;box-sizing:border-box;border:3px solid var(--ac);color:var(--ac);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800">C</span><b>Context</b><span>что вокруг: аудитория, канал, ограничения?</span><span>системный промпт или сообщение</span></div>
+<div style="display:grid;grid-template-columns:96px 260px 1fr 1fr;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span style="width:76px;height:76px;box-sizing:border-box;border:3px solid var(--ac);color:var(--ac);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800">T</span><b>Task</b><span>что сделать?</span><span>сообщение пользователя или системный промпт</span></div>
+<div style="display:grid;grid-template-columns:96px 260px 1fr 1fr;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span style="width:76px;height:76px;box-sizing:border-box;border:3px solid var(--ac);color:var(--ac);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800">F</span><b>Format</b><span>в каком виде вернуть?</span><span>системный промпт или <code>response_format</code></span></div>
+</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333">Варианты в сообществе: RTF, RACE, CRISPE — автора и статьи нет</p>
+</section>
+
+<section data-label="09 Role: зачем роль" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="324455b2">
+<lec-chrome b="1" n="1.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Role: зачем роль</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Задание роли в системном промпте фокусирует поведение и тон Claude под ваш сценарий. Даже одно предложение имеет значение.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35">Источник: Anthropic, Prompting best practices — «Give Claude a role» (перевод) — platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices</p>
+<p style="margin:64px 0 0;font-size:36px;font-weight:600">Роль в начале → на неё оглядывается каждый следующий токен (лекция 3)</p>
+</section>
+
+<section data-label="10 Тот же промпт по R.C.T.F." style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="b5c89def">
+<lec-chrome b="1" n="1.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Тот же промпт по R.C.T.F.</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Четыре части, каждая в своём теге; заранее сказано, что делать с неясным вопросом.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<lec-code k="s10" v="good" style="flex:0 0 1120px"></lec-code>
+<div style="flex:1;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Теги помогают модели видеть границы частей</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>«Не отвечать» — тоже вариант, если его разрешить</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="11 STAR — для бизнес-кейсов" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="62efbdc1">
+<lec-chrome b="1" n="1.5"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">STAR — для бизнес-кейсов</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Когда ситуация важнее роли, а результат нужно измерить.</p>
+<div style="margin-top:48px;display:flex;gap:72px;align-items:flex-start">
+<div style="flex:1;display:flex;flex-direction:column">
+<div style="display:flex;gap:36px;align-items:center;padding:14px 0;border-top:2px solid var(--ln)"><span style="width:76px;font-size:72px;font-weight:800;color:var(--ac);line-height:1">S</span><span style="font-size:30px"><b>Situation:</b> что происходит</span></div>
+<div style="display:flex;gap:36px;align-items:center;padding:14px 0;border-top:2px solid var(--ln)"><span style="width:76px;font-size:72px;font-weight:800;color:var(--ac);line-height:1">T</span><span style="font-size:30px"><b>Task:</b> какая задача стоит</span></div>
+<div style="display:flex;gap:36px;align-items:center;padding:14px 0;border-top:2px solid var(--ln)"><span style="width:76px;font-size:72px;font-weight:800;color:var(--ac);line-height:1">A</span><span style="font-size:30px"><b>Action:</b> что сделать, какие ограничения</span></div>
+<div style="display:flex;gap:36px;align-items:center;padding:14px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span style="width:76px;font-size:72px;font-weight:800;color:var(--ac);line-height:1">R</span><span style="font-size:30px"><b>Result:</b> какой результат и как проверить</span></div>
+<p style="margin:24px 0 0;font-size:var(--t-small);color:#333;line-height:1.35">Метод поведенческого интервью; по данным DDI, введён в 1974 году в методике Targeted Selection — ddi.com</p>
+</div>
+<div style="flex:0 0 440px;border:2px solid var(--ac);border-radius:20px;padding:32px 36px;font-size:28px;line-height:1.35">Бонус для <code style="color:var(--ac);font-weight:600">/career</code>: разбирать ответы кандидата по STAR</div>
+</div>
+</section>
+
+<section data-label="12 STAR на примере" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="116efbbb">
+<lec-chrome b="1" n="1.6"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">STAR на примере</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">R.C.T.F. — «кто и в каком виде», STAR — «что случилось и что считать результатом».</p>
+<div style="margin-top:48px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:0 0 1100px;display:flex;flex-direction:column;gap:16px">
+<span style="align-self:flex-start;font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px">условный пример</span>
+<lec-code k="s12"></lec-code>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3;padding-top:56px">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Сочетаются: роль по R.C.T.F. — в системный промпт, кейс по STAR — в сообщение</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="13 Разделитель 2" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:100px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center" data-om-slide-id="ebedf45d">
+<lec-chrome b="2" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">2</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Zero-shot и few-shot</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Пример сильнее описания — но модель копирует из него всё</p>
+</section>
+
+<section data-label="14 Три режима" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="9fd32a27">
+<lec-chrome b="2" n="2.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Три режима</h2>
+<div style="margin-top:56px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;min-width:0">
+<div style="border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:36px 44px;font-size:34px;line-height:1.32;font-weight:500">Zero-shot — режим, в котором модели не дают ни одной демонстрации задачи, только инструкцию на естественном языке. One-shot — то же, но с одной демонстрацией. Few-shot — модели во время инференса дают несколько демонстраций задачи как условие, без обновления весов.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35">Источник: T. Brown et al. Language Models are Few-Shot Learners (GPT-3), 2020, §2 (перевод) — arXiv:2005.14165</p>
+</div>
+<div style="flex:0 0 560px;display:flex;flex-direction:column;gap:28px;font-size:24px">
+<div style="display:flex;flex-direction:column;gap:10px"><b style="font-size:28px">Zero-shot</b><div style="display:flex;gap:6px;height:56px"><span style="flex:0 0 200px;background:var(--ac-t);border:2px solid var(--ac);border-radius:10px;display:flex;align-items:center;padding:0 14px">инструкция</span></div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><b style="font-size:28px">One-shot</b><div style="display:flex;gap:6px;height:56px"><span style="flex:0 0 200px;background:var(--ac-t);border:2px solid var(--ac);border-radius:10px;display:flex;align-items:center;padding:0 14px">инструкция</span><span style="flex:0 0 100px;background:var(--g);border:2px solid var(--ln);border-radius:10px;display:flex;align-items:center;justify-content:center">1</span></div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><b style="font-size:28px">Few-shot</b><div style="display:flex;gap:6px;height:56px"><span style="flex:0 0 200px;background:var(--ac-t);border:2px solid var(--ac);border-radius:10px;display:flex;align-items:center;padding:0 14px">инструкция</span><span style="flex:0 0 100px;background:var(--g);border:2px solid var(--ln);border-radius:10px;display:flex;align-items:center;justify-content:center">1</span><span style="flex:0 0 100px;background:var(--g);border:2px solid var(--ln);border-radius:10px;display:flex;align-items:center;justify-content:center">2</span><span style="flex:0 0 100px;background:var(--g);border:2px solid var(--ln);border-radius:10px;display:flex;align-items:center;justify-content:center">3</span></div></div>
+<p style="margin:8px 0 0;font-size:26px;line-height:1.35;color:#222">Веса не меняются — примеры просто часть контекста</p>
+</div>
+</div>
+</section>
+
+
+
+<section data-label="16 Few-shot для Router из ЛР3" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="e376edb6">
+<lec-chrome b="2" n="2.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Few-shot для Router из ЛР3</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Три разных примера, каждый в своём теге.</p>
+<div style="margin-top:32px;display:flex;gap:64px;align-items:flex-start">
+<lec-code k="s16" style="flex:0 0 1120px"></lec-code>
+<div style="flex:1;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Метки задаёт инструкция, форму — примеры</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Роли <code>study</code> в примерах нет — первое подозрение, если её выбирают редко</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="17 Как давать примеры" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="1980f2e0">
+<lec-chrome b="2" n="2.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Как давать примеры</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">3–5 разных примеров в тегах — и помните, что они в каждом запросе.</p>
+<div style="margin-top:52px;display:flex;flex-direction:column;gap:24px;font-size:var(--t-body)">
+<div style="display:flex;gap:24px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box">1</span><span>3–5 примеров.</span></div>
+<div style="display:flex;gap:24px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box">2</span><span>Разные: по теме, длине, сложности.</span></div>
+<div style="display:flex;gap:24px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box">3</span><span>В тегах <code>&lt;example&gt;</code>.</span></div>
+<div style="display:flex;gap:24px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box">4</span><span>Без случайных общих черт: одинаковые первые слова, одинаковая длина.</span></div>
+<div style="display:flex;gap:24px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box">5</span><span>Примеры — тоже токены в каждом запросе (лекция 3)</span><lec-i n="counter" s="44" c="var(--ac)"></lec-i></div>
+</div>
+<p style="margin:40px 0 0;font-size:var(--t-small);color:#333">Anthropic, Prompting best practices · OpenAI, Prompt engineering guide</p>
+</section>
+
+<section data-label="18 Когда примеры вредят" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;padding:140px 100px 110px;box-sizing:border-box;display:flex;flex-direction:column" data-om-slide-id="4eed5530">
+<lec-chrome b="2" n="2.5"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Когда примеры вредят</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3">Начинайте с zero-shot; примеры — когда модель ошибается в форме, а не по существу.</p>
+<div style="margin-top:64px;display:flex;flex-direction:column;gap:36px;font-size:var(--t-body);line-height:1.3;max-width:1400px">
+<div style="display:flex;gap:24px;align-items:flex-start"><lec-i n="tri" s="40" c="var(--wr)"></lec-i><span>Reasoning-модели: “Few-shot prompting consistently degrades its performance” — DeepSeek-R1</span></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><lec-i n="tri" s="40" c="var(--wr)"></lec-i><span>Творческие задачи: модель держится за пример</span></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><lec-i n="check" s="40" c="var(--ac)"></lec-i><span>Ошибка в форме → пример; ошибка по существу → инструкция или другая модель</span></div>
+</div>
+</section>
+
+
+<section data-label="19 Разделитель 3" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:100px;justify-content:center" data-om-slide-id="dc634a63">
+<lec-chrome b="3" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">3</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Structured output</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Ответ читает код — фиксируйте формат схемой и всё равно проверяйте</p>
+</section>
+
+<section data-label="20 Проблема: «верни JSON»" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="39668a9b">
+<lec-chrome b="3" n="3.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Проблема: «верни JSON»</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Модель не знает, что её ответ разбирает <code>json.loads</code>.</p>
+<div style="margin-top:44px;display:flex;gap:24px;align-items:center"><span style="flex:0 0 220px;font-size:26px;font-weight:600;color:#333">Запрос</span><div style="background:var(--g);border-radius:12px;padding:16px 28px;font-size:30px">Верни JSON с полями role и confidence</div></div>
+<div style="margin-top:36px;display:grid;grid-template-columns:220px 1080px 1fr;gap:24px 24px;align-items:center">
+<span style="font-size:26px;font-weight:600;color:#333">Ответы модели</span><div style="position:relative;border:2px solid var(--wr);border-radius:16px;padding:22px 72px 22px 28px;background:#fff"><code style="font-size:26px">Конечно! Вот JSON: {"role": "study", "confidence": 0.9}</code><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--wr);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="x" s="24" c="var(--wr)"></lec-i></span></div><span style="font-size:30px;color:var(--wr);font-weight:600">текст вокруг</span>
+<span></span><div style="position:relative;border:2px solid var(--wr);border-radius:16px;padding:22px 72px 22px 28px;background:#fff"><code style="font-size:26px">{"role": "учёба", "confidence": "высокая"}</code><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--wr);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="x" s="24" c="var(--wr)"></lec-i></span></div><span style="font-size:30px;color:var(--wr);font-weight:600">не те значения и типы</span>
+<span></span><div style="position:relative;border:2px solid var(--wr);border-radius:16px;padding:22px 72px 22px 28px;background:#fff"><code style="font-size:26px">{"role": "study"}</code><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--wr);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="x" s="24" c="var(--wr)"></lec-i></span></div><span style="font-size:30px;color:var(--wr);font-weight:600">поле пропало</span>
+</div>
+</section>
+
+<section data-label="21 Четыре уровня гарантий" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="2793a049">
+<lec-chrome b="3" n="3.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Четыре уровня гарантий</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Гарантию формата дают только уровни 3 и 4.</p>
+<div style="margin-top:44px;display:flex;flex-direction:column;gap:14px;font-size:28px;line-height:1.3">
+<div style="display:grid;grid-template-columns:400px 1fr 500px;gap:32px;padding:0 35px;font-size:24px;font-weight:600;color:#333"><span>Уровень</span><span>Как</span><span>Что гарантирует</span></div>
+<div style="display:grid;grid-template-columns:400px 1fr 500px;gap:32px;align-items:center;padding:22px 32px;border-radius:14px;border:3px solid var(--ac);background:#fff"><b style="color:var(--ac)">4. Function calling</b><code style="font-size:24px">tools: [...]</code><span>имя функции и аргументы по схеме</span></div>
+<div style="display:grid;grid-template-columns:400px 1fr 500px;gap:32px;align-items:center;padding:22px 32px;border-radius:14px;border:3px solid var(--ac);background:#fff"><b style="color:var(--ac)">3. Structured outputs</b><code style="font-size:24px">response_format: {"type": "json_schema", ... "strict": true}</code><span>JSON строго по вашей схеме</span></div>
+<div style="display:grid;grid-template-columns:400px 1fr 500px;gap:32px;align-items:center;padding:22px 32px;border-radius:14px;border:2px solid var(--ln);background:var(--g)"><b>2. JSON mode</b><code style="font-size:24px">response_format: {"type": "json_object"}</code><span>валидный JSON, но не ваши поля</span></div>
+<div style="display:grid;grid-template-columns:400px 1fr 500px;gap:32px;align-items:center;padding:22px 32px;border-radius:14px;border:2px solid var(--ln);background:var(--g)"><b>1. Просьба в промпте</b><code style="font-size:24px">«верни JSON»</code><span>ничего</span></div>
+</div>
+</section>
+
+<section data-label="22 Маска на логитах" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="8199d916">
+<lec-chrome b="3" n="3.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Маска на логитах</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Модель физически не может написать «Конечно!» — у этого токена вероятность 0.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3;flex:0 0 440px">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Гарантирует форму — не смысл</span></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>100% против &lt;40% на тесте OpenAI</span></div>
+<div style="margin-left:34px"><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">gpt-4o-2024-08-06 / gpt-4-0613, 2024</span></div></div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:16px"><div style="flex:1;min-height:96px;box-sizing:border-box;border:2px solid #555;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px 16px;font-size:28px;line-height:1.2">логиты</div><span style="font-size:36px;color:#333">→</span><div style="flex:1;min-height:96px;box-sizing:border-box;border:3px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px 16px;font-size:28px;line-height:1.2">маска по схеме</div><span style="font-size:36px;color:#333">→</span><div style="flex:1;min-height:96px;box-sizing:border-box;border:2px solid #555;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px 16px;font-size:28px;line-height:1.2">softmax</div><span style="font-size:36px;color:#333">→</span><div style="flex:1;min-height:96px;box-sizing:border-box;border:2px solid #555;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:12px 16px;font-size:28px;line-height:1.2">выбор токена</div></div>
+<div style="margin-top:48px;display:flex;align-items:center;gap:20px;font-size:26px"><span>Уже сгенерировано:</span><code style="background:var(--g);padding:8px 16px;border-radius:8px;font-size:28px">{"role": "</code></div>
+<div style="margin-top:36px;display:flex;align-items:flex-end;gap:28px;height:300px;border-bottom:3px solid #555;padding:0 12px;box-sizing:border-box"><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div style="width:120px;height:190px;background:var(--ac);border-radius:8px 8px 0 0"></div><code style="font-size:24px;font-weight:600;color:var(--ac)">study</code></div><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div style="width:120px;height:120px;background:var(--ac);border-radius:8px 8px 0 0"></div><code style="font-size:24px;font-weight:600;color:var(--ac)">career</code></div><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div style="width:120px;height:80px;background:var(--ac);border-radius:8px 8px 0 0"></div><code style="font-size:24px;font-weight:600;color:var(--ac)">translate</code></div><div style="display:flex;flex-direction:column;align-items:center;gap:10px"><div style="width:120px;height:60px;background:var(--ac);border-radius:8px 8px 0 0"></div><code style="font-size:24px;font-weight:600;color:var(--ac)">explain</code></div></div>
+<div style="margin-top:20px;display:flex;gap:28px;padding:0 12px"><div style="width:150px;display:flex;flex-direction:column;align-items:center;gap:6px"><code style="font-size:26px;color:#444;text-decoration:line-through">Конечно</code><span style="font-size:24px;color:#333">логит −∞</span></div><div style="width:150px;display:flex;flex-direction:column;align-items:center;gap:6px"><code style="font-size:26px;color:#444;text-decoration:line-through">учёба</code><span style="font-size:24px;color:#333">логит −∞</span></div><div style="width:150px;display:flex;flex-direction:column;align-items:center;gap:6px"><code style="font-size:26px;color:#444;text-decoration:line-through">}</code><span style="font-size:24px;color:#333">логит −∞</span></div></div>
+</div>
+</div>
+</section>
+
+<section data-label="23 Как это устроено" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="72737d59">
+<lec-chrome b="3" n="3.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Как это устроено</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Чтобы гарантировать соответствие схеме, переданная JSON Schema преобразуется в контекстно-свободную грамматику; на каждом шаге сэмплирования список недопустимых токенов используется как маска.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: OpenAI. Introducing Structured Outputs in the API, 6 августа 2024 (перевод, сокращено) — openai.com/index/introducing-structured-outputs-in-the-api; метод: B. Willard, R. Louf. Efficient Guided Generation for Large Language Models, 2023 — arXiv:2307.09702</p>
+</section>
+
+<section data-label="24 Что поддерживают бесплатные модели" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="cc3df07f">
+<lec-chrome b="3" n="3.4" d="1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Что поддерживают бесплатные модели</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Схему строго соблюдают только 3 бесплатные модели из 16.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3;flex:0 0 440px">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--wr)"></span><span style="color:var(--wr);font-weight:600">Неподдерживаемый параметр OpenRouter молча отбрасывает</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Защита: <code style="overflow-wrap:anywhere">provider.require_parameters: true</code></span></div>
+</div>
+<div style="flex:1;min-width:0"><div style="display:flex;flex-direction:column;font-size:28px;line-height:1.3">
+<div style="display:grid;grid-template-columns:400px 1fr;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span>Возможность</span><span>Бесплатные модели</span></div>
+<div style="display:grid;grid-template-columns:400px 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span>Structured outputs (схема)</span><span><code style="font-size:24px">nvidia/nemotron-3-super-120b-a12b:free</code><br><code style="font-size:24px">dots-studio/dots-3-note-preview:free</code><br><code style="font-size:24px">liquid/lfm-2.5-2.6b:free</code></span></div>
+<div style="display:grid;grid-template-columns:400px 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span>Только JSON mode</span><span><code style="font-size:24px">google/gemma-4-31b-it:free</code><br><code style="font-size:24px">google/gemma-4-26b-a4b-it:free</code></span></div>
+<div style="display:grid;grid-template-columns:400px 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span>Function calling (<code>tools</code>)</span><span>почти все текстовые бесплатные модели</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<section data-label="25 Схема из Pydantic" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="7d5b9d66">
+<lec-chrome b="3" n="3.5"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Схема из Pydantic</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Один класс — и описание для модели, и проверка для нас.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<lec-code k="s25" style="flex:0 0 1040px"></lec-code>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span><code>Literal</code> → перечисление</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span><code>Field(ge=0, le=1)</code> → минимум и максимум</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span><code>extra="forbid"</code> → запрет лишних полей</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="26 Запрос со схемой" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="24839b41">
+<lec-chrome b="3" n="3.6"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Запрос со схемой</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Схема уходит в <code>response_format</code>, а <code>require_parameters</code> не даёт ей потеряться.</p>
+<lec-code k="s26" style="margin-top:40px"></lec-code>
+</section>
+
+<section data-label="27 Проверка и повтор" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="faae2da1">
+<lec-chrome b="3" n="3.6"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Проверка и повтор</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Даже со схемой проверяем сами; ошибку возвращаем модели.</p>
+<p style="margin:32px 0 10px;font-size:24px;color:#333">продолжение</p>
+<lec-code k="s27"></lec-code>
+<div style="margin-top:36px;display:flex;gap:80px;align-items:flex-end">
+<div style="flex:0 0 1000px;display:flex;flex-direction:column;gap:10px;font-size:26px"><b style="font-size:26px">Что ловит проверка</b>
+<div style="display:grid;grid-template-columns:320px 1fr;gap:24px;padding:6px 0;border-top:2px solid var(--ln)"><code style="font-size:24px;color:var(--ac);font-weight:600">json_invalid</code><span>текст вокруг JSON</span></div>
+<div style="display:grid;grid-template-columns:320px 1fr;gap:24px;padding:6px 0;border-top:2px solid var(--ln)"><code style="font-size:24px;color:var(--ac);font-weight:600">literal_error</code><span>нет такой роли</span></div>
+<div style="display:grid;grid-template-columns:320px 1fr;gap:24px;padding:6px 0;border-top:2px solid var(--ln)"><code style="font-size:24px;color:var(--ac);font-weight:600">less_than_equal</code><span>число больше 1</span></div>
+<div style="display:grid;grid-template-columns:320px 1fr;gap:24px;padding:6px 0;border-top:2px solid var(--ln)"><code style="font-size:24px;color:var(--ac);font-weight:600">extra_forbidden</code><span>лишнее поле</span></div></div>
+<p style="margin:0;font-size:var(--t-small);color:#333">Попыток мало: на Free Tier 50 запросов в день</p></div>
+</section>
+
+<section data-label="28 Function calling: три шага" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="33b45525">
+<lec-chrome b="3" n="3.7"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Function calling: три шага</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Модель не ходит в API — она просит, а вызывает ваш код.</p>
+<div style="margin-top:56px;position:relative;height:460px">
+<div style="position:absolute;left:0;right:0;top:0;height:140px;border:2px solid var(--ln);border-radius:20px"></div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:140px;border:2px solid var(--ln);border-radius:20px"></div>
+<div style="position:relative;display:grid;grid-template-columns:200px repeat(3,1fr);grid-template-rows:140px 180px 140px;column-gap:40px;padding:0 32px;box-sizing:border-box;height:100%">
+<b style="font-size:30px;align-self:center">модель</b><span></span><div style="box-sizing:border-box;margin:14px 0;border:2px solid #333;background:#fff;border-radius:14px;padding:10px 20px;font-size:26px;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">2. Просьба: имя + аргументы JSON<code style="font-size:24px">finish_reason: tool_calls</code></div><div style="box-sizing:border-box;margin:14px 0;border:2px solid #333;background:#fff;border-radius:14px;padding:10px 20px;font-size:26px;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">Итоговый ответ</div>
+<span></span><div style="display:flex;align-items:center;justify-content:center;gap:18px;font-size:26px;line-height:1.25"><span style="font-size:72px;line-height:1;color:#333">↑</span><span>1</span></div><div style="display:flex;align-items:center;justify-content:center;gap:18px;font-size:26px;line-height:1.25"><span style="font-size:72px;line-height:1;color:#333">↓</span><span>2</span></div><div style="display:flex;align-items:center;justify-content:center;gap:18px;font-size:26px;line-height:1.25"><span style="font-size:72px;line-height:1;color:#333">↑</span><span>результат с ролью <code>tool</code></span></div>
+<b style="font-size:30px;align-self:center">ваш код</b><div style="box-sizing:border-box;margin:14px 0;border:2px solid #333;background:#fff;border-radius:14px;padding:10px 20px;font-size:26px;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">1. Вопрос + <b>описания</b> инструментов</div><span></span><div style="box-sizing:border-box;margin:14px 0;border:3px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700;border-radius:14px;padding:10px 20px;font-size:26px;line-height:1.25;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">3. Вызов функции</div>
+</div></div>
+</section>
+
+<section data-label="29 Модель не вызывает функции" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="aab2ba9a">
+<lec-chrome b="3" n="3.7"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Модель не вызывает функции</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:56px;line-height:1.3;font-weight:500;max-width:1560px">LLM не вызывает инструменты напрямую.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: OpenRouter Docs, Tool &amp; Function Calling (перевод) — openrouter.ai/docs/features/tool-calling</p>
+<p style="margin:64px 0 0;font-size:36px;font-weight:600;line-height:1.3;max-width:1600px">Это и защита: модель не сделает ничего, чего не исполнил ваш код</p>
+</section>
+
+<section data-label="30 Описание инструмента — тоже JSON Schema" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="70a012d9">
+<lec-chrome b="3" n="3.8"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Описание инструмента — тоже JSON Schema</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Описание — это промпт, по которому модель решает, когда звать инструмент.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<lec-code k="s30" fs="21" style="flex:0 0 1250px"></lec-code>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Инструмент из ЛР2</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>В MCP то же поле называется <code>inputSchema</code></span></div>
+</div>
+</div>
+</section>
+
+<section data-label="31 Аргументы тоже сгенерированы" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="41f21d2b">
+<lec-chrome b="3" n="3.9"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Аргументы тоже сгенерированы</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Модель может написать «завтра» вместо даты — проверяем и возвращаем ошибку модели.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<lec-code k="s31" style="flex:0 0 1130px"></lec-code>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Ошибку не бросаем наружу — модель увидит её и попробует снова</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="32 Так требует MCP" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="cef39548">
+<lec-chrome b="3" n="3.9" d="1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Так требует MCP</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:56px;line-height:1.3;font-weight:500;max-width:1560px">Серверы ДОЛЖНЫ проверять все входные данные инструментов.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: Model Context Protocol, Specification 2025-06-18, Tools — Security Considerations (перевод) — modelcontextprotocol.io/specification/2025-06-18/server/tools</p>
+</section>
+
+<section data-label="33 Разделитель 4" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:100px;justify-content:center" data-om-slide-id="c164ea2c">
+<lec-chrome b="4" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">4</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Chain-of-Thought</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Рассуждение — дополнительные вычисления, записанные в контекст</p>
+</section>
+
+<section data-label="34 Chain-of-Thought" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="7ed8e86d">
+<lec-chrome b="4" n="4.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Chain-of-Thought</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Цепочка рассуждений (chain of thought) — последовательность промежуточных шагов рассуждения, которую модель генерирует перед ответом.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: J. Wei et al. Chain-of-Thought Prompting Elicits Reasoning in Large Language Models, 2022 (перевод) — arXiv:2201.11903</p>
+<div style="margin-top:64px;display:flex;gap:24px;align-items:center;flex-wrap:wrap"><span style="font-size:36px;font-weight:600">8 примеров с расписанным решением → лучший на тот момент результат на GSM8K</span><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">PaLM 540B, 2022</span></div>
+</section>
+
+<section data-label="35 Почему работает и почему важен порядок" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="cbb9aa44">
+<lec-chrome b="4" n="4.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Почему работает и почему важен порядок</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Ответ, написанный до объяснения, объяснение уже не исправит.</p>
+<div style="margin-top:44px;display:flex;flex-direction:column;gap:12px;font-size:28px">
+<b>Ответ сразу</b>
+<div style="position:relative;height:64px"><div style="position:absolute;left:0px;top:0px;width:240px;height:64px;box-sizing:border-box;border:2px solid #555;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px">вопрос</div><span style="position:absolute;left:254px;top:10px;font-size:32px;color:#333">→</span><div style="position:absolute;left:300px;top:0px;width:200px;height:64px;box-sizing:border-box;border:2px solid var(--ac);background:var(--ac-t);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--ac)">ответ</div></div>
+<b style="margin-top:20px">Сначала шаги</b>
+<div style="position:relative;height:150px"><svg width="1120" height="86" viewBox="0 0 1120 86" style="position:absolute;left:0;top:0;overflow:visible"><path d="M1000 86 Q 560 6 120 86" fill="none" stroke-width="3" style="stroke:var(--ac)"></path><path d="M1000 86 Q 692.5 6 385 86" fill="none" stroke-width="3" style="stroke:var(--ac)"></path><path d="M1000 86 Q 784.5 22 569 86" fill="none" stroke-width="3" style="stroke:var(--ac)"></path><path d="M1000 86 Q 876.5 38 753 86" fill="none" stroke-width="3" style="stroke:var(--ac)"></path></svg><div style="position:absolute;left:0px;top:86px;width:240px;height:64px;box-sizing:border-box;border:2px solid #555;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px">вопрос</div><span style="position:absolute;left:254px;top:96px;font-size:32px;color:#333">→</span><div style="position:absolute;left:300px;top:86px;width:170px;height:64px;box-sizing:border-box;border:2px solid #555;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px">шаг 1</div><div style="position:absolute;left:484px;top:86px;width:170px;height:64px;box-sizing:border-box;border:2px solid #555;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px">шаг 2</div><div style="position:absolute;left:668px;top:86px;width:170px;height:64px;box-sizing:border-box;border:2px solid #555;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px">шаг 3</div><span style="position:absolute;left:852px;top:96px;font-size:32px;color:#333">→</span><div style="position:absolute;left:900px;top:86px;width:200px;height:64px;box-sizing:border-box;border:2px solid var(--ac);background:var(--ac-t);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:var(--ac)">ответ</div></div>
+</div>
+<div style="margin-top:44px;display:flex;gap:40px;align-items:center">
+<div style="position:relative;border:2px solid var(--wr);border-radius:16px;padding:22px 72px 22px 28px;background:#fff"><code style="font-size:28px">{"answer": …, "reasoning": …}</code><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--wr);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="x" s="24" c="var(--wr)"></lec-i></span></div><div style="position:relative;border:3px solid var(--ac);border-radius:16px;padding:22px 72px 22px 28px;background:#fff"><code style="font-size:28px">{"reasoning": …, "answer": …}</code><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--ac);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="check" s="24" c="var(--ac)"></lec-i></span></div><span style="font-size:28px">поля генерируются по порядку</span></div>
+</section>
+
+<section data-label="36 Zero-shot CoT: одна фраза" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="02f50a6c">
+<lec-chrome b="4" n="4.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Zero-shot CoT: одна фраза</h2>
+<p style="margin:24px 0 0;font-family:'JetBrains Mono',monospace;font-size:56px;font-weight:700;color:var(--ac)">Let's think step by step</p>
+<div style="margin-top:48px;display:flex;gap:80px;align-items:flex-start"><div style="flex:0 0 960px"><div style="display:flex;flex-direction:column;font-size:34px;line-height:1.3">
+<div style="display:grid;grid-template-columns:1fr 260px 260px;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span>Задачи</span><span>Без фразы</span><span>С фразой</span></div>
+<div style="display:grid;grid-template-columns:1fr 260px 260px;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span>MultiArith</span><span>17,7%</span><span><b style="color:var(--ac)">78,7%</b></span></div>
+<div style="display:grid;grid-template-columns:1fr 260px 260px;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span>GSM8K</span><span>10,4%</span><span><b style="color:var(--ac)">40,7%</b></span></div>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;align-items:flex-start;padding-top:40px"><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">InstructGPT (text-davinci-002), 2022</span><p style="margin:0;font-size:var(--t-small);line-height:1.35;color:#222">Сегодняшние модели рассуждают и так — эффект меньше</p></div></div>
+<p style="margin:48px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: T. Kojima et al. Large Language Models are Zero-Shot Reasoners, 2022 — arXiv:2205.11916</p>
+</section>
+
+<section data-label="37 Self-consistency: голосование" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="e4e752a9">
+<lec-chrome b="4" n="4.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Self-consistency: голосование</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Ошибки разбегаются, правильный ответ повторяется.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3;flex:0 0 460px">
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>+17,9 п. п. на GSM8K к обычному CoT</span></div>
+<div style="margin-left:34px"><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">2022</span></div></div><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--wr)"></span><span style="color:var(--wr);font-weight:600">5 путей = 5 запросов из ваших 50 в день</span></div>
+</div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:20px">
+<span style="font-size:24px;color:#333;margin-bottom:40px">числа условные</span>
+<div style="display:flex;align-items:center">
+<div style="width:190px;height:96px;box-sizing:border-box;border:2px solid #333;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px">вопрос</div>
+<div style="position:relative"><span style="position:absolute;top:-44px;left:0;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:24px">temperature &gt; 0</span><svg width="150" height="364" viewBox="0 0 150 364"><line x1="0" y1="182" x2="150" y2="30" stroke="#777" stroke-width="2"></line><line x1="0" y1="182" x2="150" y2="106" stroke="#777" stroke-width="2"></line><line x1="0" y1="182" x2="150" y2="182" stroke="#777" stroke-width="2"></line><line x1="0" y1="182" x2="150" y2="258" stroke="#777" stroke-width="2"></line><line x1="0" y1="182" x2="150" y2="334" stroke="#777" stroke-width="2"></line></svg></div>
+<div style="display:flex;flex-direction:column;gap:16px"><div style="width:120px;height:60px;box-sizing:border-box;border:3px solid var(--ac);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:var(--ac)">42</div><div style="width:120px;height:60px;box-sizing:border-box;border:3px solid var(--ac);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:var(--ac)">42</div><div style="width:120px;height:60px;box-sizing:border-box;border:2px solid #777;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#333">38</div><div style="width:120px;height:60px;box-sizing:border-box;border:3px solid var(--ac);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:var(--ac)">42</div><div style="width:120px;height:60px;box-sizing:border-box;border:2px solid #777;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#333">40</div></div>
+<svg width="110" height="364" viewBox="0 0 110 364"><line x1="0" y1="30" x2="110" y2="182" stroke="#777" stroke-width="2"></line><line x1="0" y1="106" x2="110" y2="182" stroke="#777" stroke-width="2"></line><line x1="0" y1="182" x2="110" y2="182" stroke="#777" stroke-width="2"></line><line x1="0" y1="258" x2="110" y2="182" stroke="#777" stroke-width="2"></line><line x1="0" y1="334" x2="110" y2="182" stroke="#777" stroke-width="2"></line></svg>
+<div style="width:220px;height:96px;box-sizing:border-box;border:2px solid #333;border-radius:48px;display:flex;align-items:center;justify-content:center;font-size:28px">большинство</div>
+<span style="font-size:40px;margin:0 20px;color:#333">→</span>
+<span style="font-size:110px;font-weight:800;color:var(--ac);line-height:1">42</span>
+</div>
+<p style="margin:12px 0 0;font-size:var(--t-small);color:#222;line-height:1.35">Подходит, где ответ можно сравнить: число, метка. Для <code>/translate</code> — нет</p>
+</div>
+</div>
+</section>
+
+<section data-label="38 Self-consistency: определение" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="b2ae629d">
+<lec-chrome b="4" n="4.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Self-consistency: определение</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Self-consistency сначала сэмплирует разнообразный набор путей рассуждения вместо одного жадного, а затем выбирает самый согласованный ответ, усредняя по этим путям.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: X. Wang et al. Self-Consistency Improves Chain of Thought Reasoning in Language Models, 2022 (перевод) — arXiv:2203.11171</p>
+</section>
+
+<section data-label="39 Разделитель 5" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:100px;justify-content:center" data-om-slide-id="26ba05e8">
+<lec-chrome b="5" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">5</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">ReAct</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Агент — это цикл “подумал → сделал → посмотрел на результат”</p>
+</section>
+
+<section data-label="40 ReAct" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="6caa2dad">
+<lec-chrome b="5" n="5.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">ReAct</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">ReAct — подход, в котором языковая модель генерирует рассуждения и действия, специфичные для задачи, вперемешку; действия позволяют ей обращаться к внешним источникам — базам знаний или окружению.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: S. Yao et al. ReAct: Synergizing Reasoning and Acting in Language Models, 2022 (перевод) — arXiv:2210.03629</p>
+<p style="margin:64px 0 0;font-size:36px;font-weight:600;line-height:1.3;max-width:1600px">Reasoning + Acting: если факта нет в контексте — модель может сказать “мне нужно посмотреть”</p>
+</section>
+
+<section data-label="41 Трасса на нашем боте" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="73529cb3">
+<lec-chrome b="5" n="5.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Трасса на нашем боте</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Thought и Action пишет модель, Observation — ваш код.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:0 0 1180px;display:flex;flex-direction:column;gap:16px"><div style="font-size:28px;border:2px solid #333;border-radius:14px;padding:14px 24px"><b>Пользователь:</b> «Какая завтра погода и есть ли у меня пары после обеда?»</div><lec-code k="s41"></lec-code></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Формат из оригинальной статьи</span></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>+34 и +10 п. п. к имитационному обучению и RL на ALFWorld и WebShop</span></div>
+<div style="margin-left:34px"><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">2022</span></div></div></div>
+</div>
+</section>
+
+<section data-label="42 ReAct сегодня: цикл агента" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="9ff3bed9">
+<lec-chrome b="5" n="5.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">ReAct сегодня: цикл агента</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Action — это <code>tool_calls</code> из блока 3.</p>
+<lec-code k="s42" style="margin-top:40px"></lec-code>
+</section>
+
+<section data-label="43 Цикл агента: выполнение и лимит шагов" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="957d11b6">
+<lec-chrome b="5" n="5.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Цикл агента: выполнение и лимит шагов</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Без <code>max_steps</code> агент может ходить по кругу и сжечь дневной лимит.</p>
+<p style="margin:32px 0 10px;font-size:24px;color:#333">продолжение</p>
+<lec-code k="s43"></lec-code>
+<div style="margin-top:36px;font-size:var(--t-body)"><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Каркас ЛР2 и ЛР3</span></div>
+</div>
+</section>
+
+<section data-label="44 Где здесь Thought, Action, Observation" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="cd5f6652">
+<lec-chrome b="5" n="5.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Где здесь Thought, Action, Observation</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Формат 2022 года и function calling — одно и то же.</p>
+<div style="margin-top:56px;max-width:1400px"><div style="display:flex;flex-direction:column;font-size:32px;line-height:1.3">
+<div style="display:grid;grid-template-columns:360px 1fr;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span>В трассе ReAct</span><span>В коде</span></div>
+<div style="display:grid;grid-template-columns:360px 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span><i><b>Thought</b></i></span><span>текст ответа модели или её скрытое рассуждение (блок 6)</span></div>
+<div style="display:grid;grid-template-columns:360px 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span><code style="color:var(--ac);font-weight:600">Action</code></span><span><code>message.tool_calls</code></span></div>
+<div style="display:grid;grid-template-columns:360px 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span><span style="background:#E2E2E2;padding:4px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace">Observation</span></span><span>сообщение с <code>"role": "tool"</code></span></div>
+</div>
+</div>
+</section>
+
+<section data-label="45 Разделитель 6" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:100px;justify-content:center" data-om-slide-id="21734e2c">
+<lec-chrome b="6" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">6</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Reasoning-модели изнутри</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">CoT-промпт просит рассуждать — reasoning-модель этому обучена</p>
+</section>
+
+<section data-label="46 Чем отличается от CoT-промпта" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="ce6f0f0e">
+<lec-chrome b="6" n="6.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Чем отличается от CoT-промпта</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Reasoning-модель дообучили подкреплением на задачах с проверяемым ответом.</p>
+<div style="margin-top:48px"><div style="display:flex;flex-direction:column;font-size:28px;line-height:1.3">
+<div style="display:grid;grid-template-columns:340px 1fr 1fr;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span></span><span>CoT-промпт</span><span>Reasoning-модель</span></div>
+<div style="display:grid;grid-template-columns:340px 1fr 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span><b>Откуда рассуждение</b></span><span>вы попросили фразой или примерами</span><span>модель обучена рассуждать</span></div>
+<div style="display:grid;grid-template-columns:340px 1fr 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span><b>Как обучали</b></span><span>предсказывать следующий токен текста</span><span>обучение с подкреплением на задачах с проверяемым ответом</span></div>
+<div style="display:grid;grid-template-columns:340px 1fr 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln)"><span><b>Где рассуждение</b></span><span>в видимом ответе</span><span>в отдельных блоках thinking, часто скрыто или сжато</span></div>
+<div style="display:grid;grid-template-columns:340px 1fr 1fr;gap:32px;align-items:center;padding:18px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span><b>Кто платит</b></span><span>вы, за видимые токены</span><span>вы, за все токены рассуждения как за выходные</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="47 Рассуждение возникает из награды" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="be20cbd8">
+<lec-chrome b="6" n="6.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Рассуждение возникает из награды</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:40px;line-height:1.3;font-weight:500;max-width:1560px">Способности LLM к рассуждению можно стимулировать чистым обучением с подкреплением, без размеченных человеком траекторий рассуждений.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: DeepSeek-AI. DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning, 2025 (перевод) — arXiv:2501.12948</p>
+<div style="margin-top:44px;display:flex;gap:40px;align-items:center"><div style="flex:none;border:2px solid #333;border-radius:32px 32px 32px 6px;padding:24px 36px;font-family:'JetBrains Mono',monospace;font-size:30px">Wait, wait. Wait. That's an aha moment I can flag here.</div><span style="font-size:28px;line-height:1.3">“aha moment” — резкий рост слова “wait” в рассуждениях</span></div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333">то же для o1 — OpenAI, Learning to reason with LLMs, 2024</p>
+</section>
+
+<section data-label="48 Как писать промпт reasoning-модели" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="2a3c8a3a">
+<lec-chrome b="6" n="6.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Как писать промпт reasoning-модели</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Пишите, что нужно и в каком виде, — без подробного «как».</p>
+<div style="margin-top:56px;display:flex;flex-direction:column;gap:40px;font-size:var(--t-body);line-height:1.3;max-width:1500px"><div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span><span style="text-decoration:line-through;color:var(--wr)">«думай шаг за шагом»</span> — модель рассуждает внутри, просить об этом не нужно</span></div><span style="margin-left:34px;font-size:var(--t-small);color:#333">OpenAI, Reasoning best practices</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>«Подумай тщательно» часто лучше расписанного вручную плана</span></div><span style="margin-left:34px;font-size:var(--t-small);color:#333">Anthropic, Prompting best practices</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Сначала zero-shot: few-shot ухудшает R1</span></div><span style="margin-left:34px;font-size:var(--t-small);color:#333">DeepSeek-R1</span></div>
+</div>
+</section>
+
+<section data-label="49 Рассуждению нельзя доверять как объяснению" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="204bc1c5">
+<lec-chrome b="6" n="6.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Рассуждению нельзя доверять как объяснению</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Текст рассуждения — не протокол работы модели; проверяйте результат.</p>
+<div style="margin-top:56px;display:flex;gap:64px;align-items:flex-end;flex:1">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;align-items:flex-start"><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">2025</span><p style="margin:0;font-size:var(--t-small);color:#333;line-height:1.35">Источник: Y. Chen et al. Reasoning Models Don't Always Say What They Think, 2025 — arXiv:2505.05410</p></div>
+<div style="flex:0 0 900px;display:flex;flex-direction:column;gap:28px"><div style="display:flex;gap:96px"><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:150px;font-weight:800;line-height:1;letter-spacing:-0.03em;color:var(--ac)">25%</span><span style="font-size:30px;font-weight:600">Claude 3.7 Sonnet</span></div><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:150px;font-weight:800;line-height:1;letter-spacing:-0.03em;color:var(--ac)">39%</span><span style="font-size:30px;font-weight:600">DeepSeek R1</span></div></div><p style="margin:0;font-size:28px;line-height:1.35">так часто модель упоминала в рассуждении подсказку, которой на самом деле воспользовалась</p></div>
+</div>
+</section>
+
+<section data-label="50 Сколько это стоит" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="dd5094e5">
+<lec-chrome b="6" n="6.5" r="1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Сколько это стоит</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Токены, которые Claude тратит на рассуждение, оплачиваются как выходные, даже если текст рассуждения вам не возвращается.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: Anthropic, Building with extended thinking (перевод) — platform.claude.com/docs/en/build-with-claude/thinking</p>
+</section>
+
+<section data-label="51 Разделитель 7" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:100px;justify-content:center" data-om-slide-id="665c5ee0">
+<lec-chrome b="7" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">7</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Как модель пишет код</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Синтаксис и часть семантики модель выучивает — компилятора у неё нет</p>
+<p style="margin:28px 0 0;font-size:26px;font-weight:600;color:var(--ac)">по вашей просьбе</p>
+</section>
+
+<section data-label="52 Оговорка" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="2523db75">
+<lec-chrome b="7" n=""></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Оговорка</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">В дисциплине «ООП и проектирование» генерация кода ИИ запрещена.</p>
+<div style="margin-top:64px;max-width:1400px"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Этот блок — о том, как устроен инструмент</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Не о том, как им пользоваться в той дисциплине</span></div>
+</div>
+</div></section>
+
+<section data-label="53 На чём учатся код-модели" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="9c163b31">
+<lec-chrome b="7" n="7.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">На чём учатся код-модели</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">C# в обучающих данных — почти наравне с Python.</p>
+<div style="margin-top:56px;display:flex;gap:96px;align-items:flex-start">
+<div style="flex:0 0 520px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;align-items:baseline;gap:20px"><span style="font-size:96px;font-weight:800;color:var(--ac);line-height:1">619</span><span style="font-size:30px">языков</span></div>
+<div style="display:flex;align-items:baseline;gap:20px"><span style="font-size:96px;font-weight:800;color:var(--ac);line-height:1">900+ млрд</span></div><span style="font-size:30px;margin-top:-18px">уникальных токенов</span>
+<span style="font-size:30px;font-weight:600">датасет The Stack v2</span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:36px;padding-top:24px">
+<span style="font-size:26px;color:#222">Обучающие данные StarCoder2-15B</span>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:30px;font-weight:600">C# ≈ 170 ГБ</span><div style="height:56px;width:88.5%;background:var(--ac);border-radius:8px"></div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-size:30px;font-weight:600">Python ≈ 192 ГБ</span><div style="height:56px;width:100%;background:#555;border-radius:8px"></div></div>
+</div></div>
+<p style="margin:auto 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: A. Lozhkov et al. StarCoder 2 and The Stack v2, 2024, табл. 1 — arXiv:2402.19173</p>
+</section>
+
+<section data-label="54 Как модель видит C#" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="2f2e31da">
+<lec-chrome b="7" n="7.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Как модель видит C#</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Токенизатор режет по частоте и ничего не знает про синтаксис.</p>
+<div style="margin-top:56px;display:flex;flex-direction:column;gap:44px">
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start"><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">I</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Read</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Only</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Collection</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700;border-radius:8px;padding:6px 10px">&lt;I</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Order</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Item</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">&gt;</span></div><span style="font-size:24px;color:#222">8 токенов</span></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start"><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">public</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px"> sealed</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px"> record</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px"> Log</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Message</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700;border-radius:8px;padding:6px 10px">(string</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">…</span></div></div>
+<div style="display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start"><span style="position:relative;display:inline-flex"><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">       </span><span style="position:absolute;top:100%;left:0;margin-top:10px;white-space:nowrap;font-size:24px;color:#222">7 пробелов — один токен</span></span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px"> if</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700;border-radius:8px;padding:6px 10px"> (_</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">cache</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">.Try</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Get</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">Value</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700;border-radius:8px;padding:6px 10px">(args</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid #999;background:#F5F5F5;border-radius:8px;padding:6px 10px">…</span><span style="font-family:'JetBrains Mono',monospace;font-size:30px;white-space:pre;border:2px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700;border-radius:8px;padding:6px 10px">))\n</span></div></div>
+</div>
+<p style="margin:48px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">токенизатор <code>o200k_base</code>, посчитано 15.10.2026</p>
+</section>
+
+<section data-label="55 Синтаксис восстанавливается из модели" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="34e7e371">
+<lec-chrome b="7" n="7.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Синтаксис восстанавливается из модели</h2>
+<div style="display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;min-width:0"><div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:36px;line-height:1.3;font-weight:500;max-width:1560px">В скрытых представлениях предобученных языковых моделей существует синтаксическое подпространство, из которого можно восстановить всё абстрактное синтаксическое дерево фрагмента кода; больше всего информации о дереве несут средние слои.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: J. A. Hernández López et al. AST-Probe: Recovering abstract syntax trees from hidden representations of pre-trained language models, 2022 (перевод, сокращено) — arXiv:2206.11719</p>
+</div>
+<div style="flex:0 0 520px;margin-top:56px;display:flex;align-items:center;gap:16px">
+<div style="flex:0 0 120px;display:flex;flex-direction:column;gap:8px"><span style="font-size:24px;text-align:center">слои</span><div style="height:34px;border-radius:6px;background:#fff;border:2px solid #777;box-sizing:border-box"></div><div style="height:34px;border-radius:6px;background:#fff;border:2px solid #777;box-sizing:border-box"></div><div style="height:34px;border-radius:6px;background:#fff;border:2px solid #777;box-sizing:border-box"></div><div style="height:34px;border-radius:6px;background:var(--ac)"></div><div style="height:34px;border-radius:6px;background:var(--ac)"></div><div style="height:34px;border-radius:6px;background:var(--ac)"></div><div style="height:34px;border-radius:6px;background:#fff;border:2px solid #777;box-sizing:border-box"></div><div style="height:34px;border-radius:6px;background:#fff;border:2px solid #777;box-sizing:border-box"></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;font-size:24px"><span>проба</span><span style="font-size:40px;line-height:1">→</span></div>
+<svg width="300" height="260" viewBox="0 0 300 260"><path d="M150 40 L70 130 M150 40 L230 130 M230 130 L180 220 M230 130 L280 220" stroke="#333" stroke-width="2" fill="none"></path><rect x="95" y="18" width="110" height="44" rx="10" fill="#fff" stroke="#333" stroke-width="2"></rect><text x="150" y="48" text-anchor="middle" font-size="24" font-family="JetBrains Mono" fill="#111">if</text><rect x="22" y="108" width="96" height="44" rx="10" fill="#fff" stroke="#333" stroke-width="2"></rect><text x="70" y="138" text-anchor="middle" font-size="24" font-family="JetBrains Mono" fill="#111">cond</text><rect x="180" y="108" width="100" height="44" rx="10" fill="#fff" stroke="#333" stroke-width="2"></rect><text x="230" y="138" text-anchor="middle" font-size="24" font-family="JetBrains Mono" fill="#111">block</text><rect x="140" y="198" width="80" height="44" rx="10" fill="#fff" stroke="#333" stroke-width="2"></rect><text x="180" y="228" text-anchor="middle" font-size="24" font-family="JetBrains Mono" fill="#111">call</text><rect x="244" y="198" width="56" height="44" rx="10" fill="#fff" stroke="#333" stroke-width="2"></rect><text x="272" y="228" text-anchor="middle" font-size="24" font-family="JetBrains Mono" fill="#111">ret</text></svg>
+</div></div>
+</section>
+
+<section data-label="56 А семантика?" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="9df4cda4">
+<lec-chrome b="7" n="7.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">А семантика?</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Модель, обученная только на текстах программ, сама начала отслеживать состояние программы.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3;flex:0 0 400px">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>350 млн параметров, учебный язык Karel</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Состояния робота модели не показывали</span></div>
+<div style="margin-left:34px"><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">2024</span></div></div>
+<div style="flex:1;display:flex;align-items:center;gap:20px;margin-top:20px">
+<div style="display:grid;grid-template-columns:repeat(5,52px);border:2px solid #333"><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"><span style="width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-bottom:28px solid var(--ac)"></span></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div><div style="width:52px;height:52px;border:1px solid #999;box-sizing:border-box;display:flex;align-items:center;justify-content:center"></div></div>
+<div style="display:flex;flex-direction:column;align-items:center;font-size:24px;gap:2px"><span></span><span style="font-size:40px;line-height:1;color:#333">→</span></div>
+<div style="background:var(--g);border-radius:14px;padding:20px 28px;font-family:'JetBrains Mono',monospace;font-size:28px;line-height:1.5">move<br>turnLeft<br>move</div>
+<div style="display:flex;flex-direction:column;align-items:center;font-size:24px;gap:2px"><span></span><span style="font-size:40px;line-height:1;color:#333">→</span></div>
+<div style="border:2px solid #333;border-radius:18px;padding:28px 24px;font-size:28px;text-align:center">модель</div>
+<div style="display:flex;flex-direction:column;align-items:center;font-size:24px;gap:2px"><span>проба</span><span style="font-size:40px;line-height:1;color:#333">→</span></div>
+<div style="display:flex;flex-direction:column;gap:10px;font-family:'JetBrains Mono',monospace;font-size:26px;color:var(--ac);font-weight:600"><span>1: (1,2) ↑</span><span>2: (1,2) ←</span><span>3: (0,2) ←</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="57 Семантика: что показали" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="8047864a">
+<lec-chrome b="7" n="7.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Семантика: что показали</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:40px;line-height:1.3;font-weight:500;max-width:1560px">Языковые модели кода могут научиться представлять формальную семантику программ: зонд извлекает из модели всё более точные представления промежуточных состояний программы, которые модель никогда не видела.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: C. Jin, M. Rinard. Emergent Representations of Program Semantics in Language Models Trained on Programs, ICML 2024 (перевод, сокращено) — arXiv:2305.11169</p>
+<p style="margin:48px 0 0;font-size:30px;font-weight:600;line-height:1.3;max-width:1600px">Для больших моделей — косвенные признаки: в Claude найден признак “ошибка в коде”, срабатывающий на похожие баги в разных языках (Anthropic, Scaling Monosemanticity, 2024)</p>
+</section>
+
+<section data-label="58 Смысл слова — из контекста" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="22a3f2e8">
+<lec-chrome b="7" n="7.5"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Смысл слова — из контекста</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Один и тот же токен <code> field</code> — то ключевое слово C# 14, то имя переменной.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:0 0 1120px;display:flex;flex-direction:column;gap:28px"><div style="background:var(--g);border-radius:16px;padding:28px 32px;font-family:'JetBrains Mono',monospace;font-size:26px;white-space:pre;color:#111"><span style="color:#8A1A9E;font-weight:600">public</span> <span style="color:#8A1A9E;font-weight:600">string</span> Name { <span style="color:#8A1A9E;font-weight:600">get</span> =&gt; <span style="background:var(--ac-t);color:var(--ac);font-weight:700;box-shadow:0 0 0 3px var(--ac-t);border-radius:2px">field</span>; <span style="color:#8A1A9E;font-weight:600">set</span> =&gt; <span style="background:var(--ac-t);color:var(--ac);font-weight:700;box-shadow:0 0 0 3px var(--ac-t);border-radius:2px">field</span> = <span style="color:#8A1A9E;font-weight:600">value</span>.Trim(); }</div><div style="background:var(--g);border-radius:16px;padding:28px 32px;font-family:'JetBrains Mono',monospace;font-size:26px;white-space:pre;color:#111"><span style="color:#8A1A9E;font-weight:600">var</span> <span style="background:var(--ac-t);color:var(--ac);font-weight:700;box-shadow:0 0 0 3px var(--ac-t);border-radius:2px">field</span> = form.GetField(<span style="color:#1A6E2B">"Name"</span>);</div></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Как “ключ” от квартиры и родник — лекция 3</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--wr)"></span><span style="color:var(--wr);font-weight:600">Модель, обученная до C# 14, не видела <code>field</code> в первой роли</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="59 Компилятор знает, модель угадывает" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="57847b21">
+<lec-chrome b="7" n="7.6"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Компилятор знает, модель угадывает</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Там, где «обычно» и «на самом деле» расходятся, модель ошибается уверенно.</p>
+<div style="margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:48px">
+<div style="border:3px solid var(--ac);border-radius:28px;padding:44px;display:flex;flex-direction:column;gap:24px;font-size:var(--t-body)"><b style="font-size:36px;color:var(--ac)">Roslyn (компилятор C#)</b><div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>синтаксическое дерево</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>тип любого выражения</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>на что ссылается имя</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>все ошибки и предупреждения</span></div>
+</div>
+<div style="border:2px solid #777;border-radius:28px;padding:44px;display:flex;flex-direction:column;gap:24px;font-size:var(--t-body)"><b style="font-size:36px">LLM</b><p style="margin:0;line-height:1.35">статистическая модель того, какой код обычно пишут в таком окружении</p></div>
+</div>
+</section>
+
+<section data-label="60 Семантическая модель компилятора" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="eab98328">
+<lec-chrome b="7" n="7.6"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Семантическая модель компилятора</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Семантическая модель инкапсулирует правила языка, позволяя правильно сопоставить идентификатор с элементом программы, на который он ссылается.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: Microsoft Learn, Work with semantics — .NET Compiler Platform SDK (перевод) — learn.microsoft.com/dotnet/csharp/roslyn-sdk/work-with-semantics</p>
+</section>
+
+<section data-label="61 Ошибка 1: несуществующие пакеты" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="4e2b40bc">
+<lec-chrome b="7" n="7.7"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Ошибка 1: несуществующие пакеты</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">NuGet-пакет из ответа модели — сначала найти на nuget.org, потом <code>dotnet add package</code>.</p>
+<div style="margin-top:56px;display:flex;gap:64px;align-items:flex-start;flex:1">
+<div style="flex:1;font-size:var(--t-body);line-height:1.3"><div style="display:flex;gap:24px;align-items:flex-start"><lec-i n="tri" s="40" c="var(--wr)"></lec-i><span>Злоумышленник может зарегистрировать часто выдумываемое имя — атака на путаницу пакетов</span></div>
+</div>
+<div style="flex:0 0 880px;display:flex;flex-direction:column;gap:24px"><div style="display:flex;gap:80px"><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:150px;font-weight:800;line-height:1;letter-spacing:-0.03em;color:var(--wr)">5,2%</span><span style="font-size:30px;font-weight:600">коммерческие модели</span></div><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:150px;font-weight:800;line-height:1;letter-spacing:-0.03em;color:var(--wr)">21,7%</span><span style="font-size:30px;font-weight:600">открытые</span></div></div><p style="margin:0;font-size:var(--t-small);line-height:1.35;color:#222">205 474 уникальных несуществующих имени на 576 000 фрагментов кода · Python и JavaScript · 16 моделей</p></div>
+</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: J. Spracklen et al. We Have a Package for You!, USENIX Security 2025 — arXiv:2406.10279</p>
+</section>
+
+<section data-label="62 Ошибка 2: устаревшие API" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="bf45021a">
+<lec-chrome b="7" n="7.8"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Ошибка 2: устаревшие API</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Контекст решает — покажите модели актуальный код.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:32px;padding-right:80px"><span style="font-size:26px;color:#222">Доля устаревших API в ответах</span><div style="display:grid;grid-template-columns:400px 1fr;gap:32px;align-items:center"><span style="font-size:28px">в целом</span><div style="position:relative;height:56px"><div style="position:absolute;left:0;right:0;top:27px;height:2px;background:#999"></div><div style="position:absolute;left:25%;width:13%;top:0;bottom:0;background:#777;border-radius:8px"></div><span style="position:absolute;left:calc(38% + 16px);top:50%;transform:translateY(-50%);font-size:28px;font-weight:700;color:#333;white-space:nowrap">25–38%</span></div></div>
+<div style="display:grid;grid-template-columns:400px 1fr;gap:32px;align-items:center"><span style="font-size:28px">с устаревшим контекстом</span><div style="position:relative;height:56px"><div style="position:absolute;left:0;right:0;top:27px;height:2px;background:#999"></div><div style="position:absolute;left:70%;width:20%;top:0;bottom:0;background:var(--wr);border-radius:8px"></div><span style="position:absolute;left:calc(90% + 16px);top:50%;transform:translateY(-50%);font-size:28px;font-weight:700;color:var(--wr);white-space:nowrap">70–90%</span></div></div>
+<div style="display:grid;grid-template-columns:400px 1fr;gap:32px;align-items:center"><span style="font-size:28px">с актуальным контекстом</span><div style="position:relative;height:56px"><div style="position:absolute;left:0;right:0;top:27px;height:2px;background:#999"></div><div style="position:absolute;left:9%;width:9%;top:0;bottom:0;background:var(--ac);border-radius:8px"></div><span style="position:absolute;left:calc(18% + 16px);top:50%;transform:translateY(-50%);font-size:28px;font-weight:700;color:var(--ac);white-space:nowrap">9–18%</span></div></div>
+<div style="display:flex;gap:16px;align-items:center"><span style="font-size:24px;color:#222">7 моделей, 8 библиотек Python</span><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">2024</span></div></div>
+<div style="flex:0 0 340px;border:2px solid var(--ac);border-radius:20px;padding:28px 32px;font-size:28px;line-height:1.35">Это RAG из лекции 3 — для кода</div>
+</div>
+<p style="margin:auto 0 0 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: C. Wang et al. LLMs Meet Library Evolution, 2024 — arXiv:2406.09834</p>
+</section>
+
+<section data-label="63 Ошибка 2: новые версии языка" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="210f384d">
+<lec-chrome b="7" n="7.8"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Ошибка 2: новые версии языка</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">C# 14 и .NET 10 вышли 11 ноября 2025 года — модель, обученная раньше, их не знает.</p>
+<div style="margin-top:56px;max-width:1300px"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span><code>field</code> в аксессорах</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span><code>extension</code>-блоки</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>присваивание через <code>?.</code></span></div>
+</div>
+</div><p style="margin:auto 0 0 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источники: Microsoft Learn, What's new in C# 14; .NET Blog, Announcing .NET 10</p>
+</section>
+
+<section data-label="64 Ошибка 3: язык менее популярен" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="60940085">
+<lec-chrome b="7" n="7.9"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Ошибка 3: язык менее популярен</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Качество генерации кода коррелирует с популярностью языка.</p>
+<div style="margin-top:56px;max-width:1300px"><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Одни и те же задачи на 18 языках, включая C#</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>C# статистически ниже Python</span></div>
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Разрыв сокращается, направление то же</span></div>
+</div>
+</div><div style="margin-top:auto;display:flex;gap:16px;align-items:center"><span style="font-size:var(--t-small);color:#333">Источник: F. Cassano et al. MultiPL-E, 2022 — arXiv:2208.08227</span><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">модели 2022</span></div>
+</section>
+
+<section data-label="65 Автодополнение в IDE: fill-in-the-middle" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="ac78c7dc">
+<lec-chrome b="7" n="7.10"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Автодополнение в IDE: fill-in-the-middle</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Модель умеет только продолжать — поэтому код после курсора переставляют вперёд.</p>
+<div style="margin-top:56px;display:flex;flex-direction:column;gap:20px">
+<span style="font-size:26px;font-weight:600">Файл в редакторе</span>
+<div style="display:flex;align-items:center;gap:0;background:var(--g);border-radius:16px;padding:28px 32px;align-self:flex-start"><span style="font-size:28px;border-radius:10px;padding:12px 24px;border:2px solid #555;background:#fff">prefix — код до курсора</span><span style="width:5px;height:64px;background:var(--ac);margin:0 18px;animation:blink 1s steps(1) infinite"></span><span style="font-size:28px;border-radius:10px;padding:12px 24px;border:2px solid #555;background:#fff">suffix — код после</span></div>
+<span style="margin-top:36px;font-size:26px;font-weight:600">Строка для модели</span>
+<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><span style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;background:#E2E2E2;border-radius:8px;padding:10px 14px">&lt;PRE&gt;</span><span style="font-size:28px;border-radius:10px;padding:12px 24px;border:2px solid #555;background:#fff">prefix</span><span style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;background:#E2E2E2;border-radius:8px;padding:10px 14px">&lt;SUF&gt;</span><span style="font-size:28px;border-radius:10px;padding:12px 24px;border:2px solid #555;background:#fff">suffix</span><span style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;background:#E2E2E2;border-radius:8px;padding:10px 14px">&lt;MID&gt;</span><span style="font-size:40px;color:#333;margin:0 8px">→</span><span style="font-size:28px;border-radius:10px;padding:12px 24px;border:3px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:800">middle</span></div>
+</div>
+</section>
+
+<section data-label="66 Fill-in-the-middle: определение" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="4383ad25">
+<lec-chrome b="7" n="7.10"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Fill-in-the-middle: определение</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Обучение заполнению середины: фрагмент текста из середины документа просто переносится в его конец; это не ухудшает обычную генерацию слева направо.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: M. Bavarian et al. Efficient Training of Language Models to Fill in the Middle, 2022 (перевод, сокращено) — arXiv:2207.14255</p>
+</section>
+
+<section data-label="67 Почему модели так выросли в коде" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="459869c4">
+<lec-chrome b="7" n="7.11" d="1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Почему модели так выросли в коде</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Код можно проверить автоматически — идеальная задача для обучения с подкреплением.</p>
+<div style="margin-top:24px;display:flex;gap:48px;align-items:center;flex:1">
+<div style="flex:1;display:flex;flex-direction:column;gap:32px;font-size:28px;line-height:1.3">
+<div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span><b style="font-size:48px;color:var(--ac)">28,8%</b> задач HumanEval с первой попытки</span><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">Codex, 2021</span></div>
+<div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start"><span><b style="font-size:48px;color:var(--ac)">1,96%</b> задач SWE-bench — лучшая модель (Claude 2)</span><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">2023</span></div>
+<span style="font-size:26px;color:#222">сегодня — многократно выше, см. swebench.com</span></div>
+<div style="position:relative;width:860px;height:600px;flex:none"><svg width="860" height="600" viewBox="0 0 860 600" style="position:absolute;left:0;top:0"><circle cx="430" cy="300" r="230" fill="none" stroke="#777" stroke-width="3"></circle><polygon points="-14,-11 14,0 -14,11" transform="translate(593 137) rotate(45)" fill="#555"></polygon><polygon points="-14,-11 14,0 -14,11" transform="translate(593 463) rotate(135)" fill="#555"></polygon><polygon points="-14,-11 14,0 -14,11" transform="translate(267 463) rotate(225)" fill="#555"></polygon><polygon points="-14,-11 14,0 -14,11" transform="translate(267 137) rotate(315)" fill="#555"></polygon></svg><div style="position:absolute;left:430px;top:70px;transform:translate(-50%,-50%);width:300px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:2px solid #333;background:#fff">модель пишет код</div><div style="position:absolute;left:660px;top:300px;transform:translate(-50%,-50%);width:300px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:3px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700">компилятор и тесты</div><div style="position:absolute;left:430px;top:530px;transform:translate(-50%,-50%);width:300px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:2px solid #333;background:#fff">награда «прошло / не прошло»</div><div style="position:absolute;left:200px;top:300px;transform:translate(-50%,-50%);width:300px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:2px solid #333;background:#fff">обновление модели</div></div>
+</div>
+</section>
+
+<section data-label="68 Код-агент — это ReAct с компилятором" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="3e856110">
+<lec-chrome b="7" n="7.12"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Код-агент — это ReAct с компилятором</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Код от модели не готов, пока не собрался и не прошёл тесты.</p>
+<lec-code k="s68" style="margin-top:40px"></lec-code>
+</section>
+
+<section data-label="69 Промпт для кода — чек-лист" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="6dd451d9">
+<lec-chrome b="7" n="7.13"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Промпт для кода — чек-лист</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Это тот же R.C.T.F., только context здесь — код.</p>
+<div style="margin-top:52px;display:flex;flex-direction:column;gap:26px;font-size:var(--t-body);line-height:1.3"><div style="display:grid;grid-template-columns:56px 1fr 360px;gap:28px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box;font-size:28px">1</span><span>Версия: «Python 3.13, aiogram 3» / «C# 14, .NET 10»</span><span style="justify-self:start;font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px">устаревшие API</span></div>
+<div style="display:grid;grid-template-columns:56px 1fr 360px;gap:28px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box;font-size:28px">2</span><span>Контекст: соседний код, ваши интерфейсы — сам код, не пересказ</span><span style="justify-self:start;font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px">устаревшие API</span></div>
+<div style="display:grid;grid-template-columns:56px 1fr 360px;gap:28px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box;font-size:28px">3</span><span>Пример стиля: один ваш класс как few-shot</span><span style="justify-self:start;font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px">соглашения проекта</span></div>
+<div style="display:grid;grid-template-columns:56px 1fr 360px;gap:28px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box;font-size:28px">4</span><span>Ограничения: какие пакеты можно</span><span style="justify-self:start;font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px">выдуманные пакеты</span></div>
+<div style="display:grid;grid-template-columns:56px 1fr 360px;gap:28px;align-items:center"><span style="flex:none;width:56px;height:56px;border-radius:50%;border:3px solid var(--ac);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:800;box-sizing:border-box;font-size:28px">5</span><span>Проверка: компиляция и тесты</span><span style="justify-self:start;font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px">всё остальное</span></div>
+</div>
+</section>
+
+<section data-label="70 Разделитель 8" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:100px;justify-content:center" data-om-slide-id="90ea8050">
+<lec-chrome b="8" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">8</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Мета-промптинг</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Модель может улучшать промпты — но только против набора тестов</p>
+</section>
+
+<section data-label="71 Два значения термина" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="b3e3120d">
+<lec-chrome b="8" n="8.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Два значения термина</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Сегодня нас интересует широкий смысл.</p>
+<div style="margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:48px;font-size:32px;line-height:1.35">
+<div style="border:3px solid var(--ac);border-radius:28px;padding:44px;display:flex;flex-direction:column;gap:20px"><b style="font-size:40px;color:var(--ac)">Широкий смысл</b><span>LLM генерирует или улучшает промпт</span></div>
+<div style="border:2px solid #777;border-radius:28px;padding:44px;display:flex;flex-direction:column;gap:20px"><b style="font-size:40px">Узкий смысл</b><span>модель-дирижёр раздаёт подзадачи “экспертам”: экземплярам себя же</span><span style="margin-top:auto;font-size:26px;color:#222">почти мультиагентность — ЛР3</span></div>
+</div>
+</section>
+
+<section data-label="72 Мета-промптинг в узком смысле" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="f37ea7c6">
+<lec-chrome b="8" n="8.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Мета-промптинг в узком смысле</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:40px;line-height:1.3;font-weight:500;max-width:1560px">Мета-промптинг превращает одну языковую модель в дирижёра, который управляет несколькими независимыми запросами к ней же и объединяет их; подзадачи решают отдельные экземпляры той же модели — «эксперты», каждый со своими инструкциями.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: M. Suzgun, A. T. Kalai. Meta-Prompting: Enhancing Language Models with Task-Agnostic Scaffolding, 2024 (перевод, сокращено) — arXiv:2401.12954</p>
+</section>
+
+<section data-label="73 Модели находят промпты лучше людей" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="d3431ae9">
+<lec-chrome b="8" n="8.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Модели находят промпты лучше людей</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Найденные фразы работают на конкретной модели — это не волшебные слова.</p>
+<div style="margin-top:44px"><div style="display:flex;flex-direction:column;font-size:28px;line-height:1.3">
+<div style="display:grid;grid-template-columns:1fr 330px 470px;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span>Промпт</span><span>Кто нашёл</span><span>Результат</span></div>
+<div style="display:grid;grid-template-columns:1fr 330px 470px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span><code style="font-size:24px">Let's think step by step</code></span><span><span style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">люди (Kojima, 2022)<span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">InstructGPT, 2022</span></span></span><span>MultiArith 78,7%, GSM8K 40,7%</span></div>
+<div style="display:grid;grid-template-columns:1fr 330px 470px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span><code style="font-size:24px">Let's work this out in a step by step way to be sure we have the right answer.</code></span><span><span style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">модель (APE, 2022)<span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">InstructGPT, 2022</span></span></span><span>MultiArith 82,0%, GSM8K 43,0%</span></div>
+<div style="display:grid;grid-template-columns:1fr 330px 470px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span><code style="font-size:24px">Take a deep breath and work on this problem step-by-step.</code></span><span><span style="display:flex;flex-direction:column;gap:8px;align-items:flex-start">модель (OPRO, 2023)<span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">PaLM 2, 2023</span></span></span><span>GSM8K 80,2% против 71,8% у «Let's think step by step»</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="74 Мета-промпт для бота из ЛР1" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="348d6f0a">
+<lec-chrome b="8" n="8.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Мета-промпт для бота из ЛР1</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Тестовые вопросы у вас уже есть — из отчёта по ЛР1.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<lec-code k="s74" style="flex:0 0 1120px"></lec-code>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:30px;font-size:var(--t-body);line-height:1.3">
+<div style="display:flex;gap:20px"><span style="flex:none;width:14px;height:14px;margin-top:13px;border-radius:50%;background:var(--ac)"></span><span>Без последней строки модель допишет двадцать правил — антипаттерн из блока 9</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="75 Цикл улучшения" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="1a05ae3c">
+<lec-chrome b="8" n=""></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Цикл улучшения</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Без тестов мета-промптинг — гадание.</p>
+<div style="flex:1;display:flex;justify-content:center;align-items:center"><div style="position:relative;width:1000px;height:640px;flex:none"><svg width="1000" height="640" viewBox="0 0 1000 640" style="position:absolute;left:0;top:0"><circle cx="500" cy="320" r="250" fill="none" stroke="#777" stroke-width="3"></circle><polygon points="-14,-11 14,0 -14,11" transform="translate(677 143) rotate(45)" fill="#555"></polygon><polygon points="-14,-11 14,0 -14,11" transform="translate(677 497) rotate(135)" fill="#555"></polygon><polygon points="-14,-11 14,0 -14,11" transform="translate(323 497) rotate(225)" fill="#555"></polygon><polygon points="-14,-11 14,0 -14,11" transform="translate(323 143) rotate(315)" fill="#555"></polygon></svg><div style="position:absolute;left:500px;top:70px;transform:translate(-50%,-50%);width:320px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:3px solid var(--ac);background:var(--ac-t);color:var(--ac);font-weight:700">прогнать тесты (снова — после новой версии)</div><div style="position:absolute;left:750px;top:320px;transform:translate(-50%,-50%);width:320px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:2px solid #333;background:#fff">собрать провалы</div><div style="position:absolute;left:500px;top:570px;transform:translate(-50%,-50%);width:320px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:2px solid #333;background:#fff">мета-промпт</div><div style="position:absolute;left:250px;top:320px;transform:translate(-50%,-50%);width:320px;box-sizing:border-box;padding:16px 20px;border-radius:18px;text-align:center;font-size:28px;line-height:1.25;border:2px solid #333;background:#fff">новая версия промпта</div></div></div>
+</section>
+
+<section data-label="76 Разделитель 9" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:100px;justify-content:center" data-om-slide-id="05953c87">
+<lec-chrome b="9" sep="1"></lec-chrome>
+<div style="font-size:260px;font-weight:800;color:var(--ac);line-height:0.85;letter-spacing:-0.04em">9</div>
+<h2 style="margin:40px 0 0;font-size:110px;font-weight:800;letter-spacing:-0.03em;line-height:1">Антипаттерны</h2>
+<p style="margin:40px 0 0;font-size:44px;line-height:1.25;max-width:1500px">Слишком много, противоречиво, с подсказкой ответа или с мусором из прошлого</p>
+<div style="margin-top:44px;display:flex;gap:16px"><span style="font-size:28px;font-weight:600;border:2px solid var(--wr);color:var(--wr);border-radius:10px;padding:8px 20px">перегрузка</span><span style="font-size:28px;font-weight:600;border:2px solid var(--wr);color:var(--wr);border-radius:10px;padding:8px 20px">противоречие</span><span style="font-size:28px;font-weight:600;border:2px solid var(--wr);color:var(--wr);border-radius:10px;padding:8px 20px">наводящий вопрос</span><span style="font-size:28px;font-weight:600;border:2px solid var(--wr);color:var(--wr);border-radius:10px;padding:8px 20px">грязный контекст</span></div>
+</section>
+
+<section data-label="77 Prompt overload" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="73c97d42">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Prompt overload</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Каждое правило борется за внимание с остальными.</p>
+<div style="margin-top:48px;display:flex;gap:80px;align-items:flex-start">
+<div style="flex:1;position:relative;padding:28px 0">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(to bottom,#E9E9E9 0 8px,transparent 8px 16px);border-radius:4px"></div>
+<div style="position:relative;display:flex;flex-direction:column;gap:28px;font-size:var(--t-body);line-height:1.3;padding:0 28px"><div style="display:flex;gap:24px;align-items:flex-start;background:#fff;padding:12px 18px;border-radius:12px"><lec-i n="tri" s="40" c="var(--wr)"></lec-i><span>С ростом числа инструкций модели выполняют в первую очередь ранние</span></div>
+<div style="display:flex;gap:24px;align-items:flex-start;background:#fff;padding:12px 18px;border-radius:12px"><lec-i n="check" s="40" c="var(--ac)"></lec-i><span>Оставить правила, которые меняют ответы на ваших тестах</span></div>
+<div style="display:flex;gap:24px;align-items:flex-start;background:#fff;padding:12px 18px;border-radius:12px"><lec-i n="check" s="40" c="var(--ac)"></lec-i><span>Формат — в <code>response_format</code></span></div>
+</div></div>
+<div style="flex:0 0 560px;display:flex;flex-direction:column;gap:16px;align-items:flex-start"><div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:150px;font-weight:800;line-height:1;letter-spacing:-0.03em;color:var(--ac)">68%</span><span style="font-size:30px;font-weight:600">точность лучших моделей при 500 одновременных инструкциях</span></div><span style="font-size:24px;font-weight:500;background:#E6E6E6;color:#222;border-radius:8px;padding:4px 14px;white-space:nowrap">2025</span></div>
+</div>
+<p style="margin:auto 0 0 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: D. Jaroslawicz et al. How Many Instructions Can LLMs Follow at Once?, 2025 — arXiv:2507.11538</p>
+</section>
+
+<section data-label="78 Instruction conflict" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="32e8ec22">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Instruction conflict</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Внутри одного промпта модель не знает, какое правило важнее, — и решает каждый раз по-разному.</p>
+<div style="margin-top:40px;display:flex;gap:64px;align-items:flex-start">
+<div style="flex:0 0 1100px;display:flex;flex-direction:column;gap:28px"><lec-code k="s78"></lec-code><div style="position:relative;border:3px solid var(--ac);border-radius:16px;padding:24px 72px 24px 28px;background:#fff"><span style="font-size:30px;color:var(--ac);font-weight:600">Если пользователь просит код, краткость не обязательна</span><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--ac);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="check" s="24" c="var(--ac)"></lec-i></span></div></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;max-width:340px"><span style="font-size:24px;color:#222;margin-bottom:6px">приоритет сверху вниз</span><div style="border:2px solid #333;border-radius:14px;padding:14px 20px;font-size:28px;text-align:center">система</div><span style="text-align:center;font-size:32px;line-height:1">↓</span><div style="border:2px solid #333;border-radius:14px;padding:14px 20px;font-size:28px;text-align:center">разработчик</div><span style="text-align:center;font-size:32px;line-height:1">↓</span><div style="border:2px solid #333;border-radius:14px;padding:14px 20px;font-size:28px;text-align:center">пользователь</div></div>
+</div>
+</section>
+
+<section data-label="79 Иерархия инструкций" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="9e6b1d23">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Иерархия инструкций</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Иерархия инструкций явно определяет, как модель должна вести себя, когда конфликтуют инструкции разного приоритета.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: E. Wallace et al. The Instruction Hierarchy: Training LLMs to Prioritize Privileged Instructions, 2024 (перевод) — arXiv:2404.13208</p>
+</section>
+
+<section data-label="80 Leading questions" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="a738a37e">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Leading questions</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Вопрос с готовым ответом внутри часто этот ответ и получает.</p>
+<div style="margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:48px;font-size:34px;line-height:1.35"><div style="position:relative;border:2px solid var(--wr);border-radius:16px;padding:24px 72px 24px 28px;background:#fff"><span style="display:block;padding:12px 0">Правда ведь, что record в C# всегда быстрее class?</span><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--wr);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="x" s="24" c="var(--wr)"></lec-i></span></div><div style="position:relative;border:3px solid var(--ac);border-radius:16px;padding:24px 72px 24px 28px;background:#fff"><span style="display:block;padding:12px 0">Сравни record и class по производительности. Когда что быстрее?</span><span style="position:absolute;top:10px;right:10px;width:40px;height:40px;box-sizing:border-box;border-radius:50%;border:2px solid var(--ac);display:flex;align-items:center;justify-content:center;background:#fff"><lec-i n="check" s="24" c="var(--ac)"></lec-i></span></div></div>
+<p style="margin:36px 0 0;font-size:var(--t-small);color:#222">Ловушка: <code>record</code> по умолчанию и есть класс</p>
+</section>
+
+<section data-label="81 Угодливость моделей" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="2d209583">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Угодливость моделей</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:44px;line-height:1.3;font-weight:500;max-width:1560px">Пять современных ИИ-ассистентов стабильно проявляют угодливость (sycophancy); и люди, и модели предпочтений предпочитают убедительно написанные угодливые ответы правильным.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: M. Sharma et al. Towards Understanding Sycophancy in Language Models, 2023 (перевод, сокращено) — arXiv:2310.13548</p>
+</section>
+
+<section data-label="82 Кэширование «грязного» контекста" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="72db43a2">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Кэширование «грязного» контекста</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Ошибка, попавшая в историю, уходит в каждый следующий запрос.</p>
+<div style="margin-top:72px;display:flex;flex-direction:column;gap:16px">
+<span style="font-size:26px;color:#222">из кэша — дёшево, поэтому никто не чистит</span>
+<div style="display:flex;gap:6px;height:220px;color:#fff;font-size:30px;font-weight:600">
+<div style="flex:22;background:var(--x1);border-radius:16px 0 0 16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 20px"><code>системный промпт</code></div>
+<div style="flex:56;background:var(--x2);display:flex;flex-direction:column;justify-content:space-between;padding:20px 24px;box-sizing:border-box"><code>история диалога</code><div style="display:flex;gap:14px"><span style="background:#fff;border:3px solid var(--wr);color:var(--wr);font-weight:600;font-size:24px;border-radius:10px;padding:10px 14px;line-height:1.25;text-align:center">ошибочный ответ модели</span><span style="background:#fff;border:3px solid var(--wr);color:var(--wr);font-weight:600;font-size:24px;border-radius:10px;padding:10px 14px;line-height:1.25;text-align:center">упавший вызов инструмента</span><span style="background:#fff;border:3px solid var(--wr);color:var(--wr);font-weight:600;font-size:24px;border-radius:10px;padding:10px 14px;line-height:1.25;text-align:center">стиль прошлой роли</span></div></div>
+<div style="flex:22;background:var(--x3);border-radius:0 16px 16px 0;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 20px"><code>новое сообщение</code></div>
+</div></div>
+</section>
+
+<section data-label="83 Контекст — конечный ресурс" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="01038c4d">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Контекст — конечный ресурс</h2>
+<div style="margin-top:56px;border:3px solid var(--ac);border-left-width:16px;border-radius:14px;padding:40px 52px;font-size:40px;line-height:1.3;font-weight:500;max-width:1560px">Контекст нужно рассматривать как конечный ресурс с убывающей отдачей. Цель — найти наименьший набор высокосигнальных токенов, который максимизирует вероятность нужного результата.</div>
+<p style="margin:28px 0 0;font-size:var(--t-small);color:#333;line-height:1.35;max-width:1640px">Источник: Anthropic, Effective context engineering for AI agents, 29 сентября 2025 (перевод) — anthropic.com/engineering/effective-context-engineering-for-ai-agents</p>
+<p style="margin:48px 0 0;font-size:32px;font-weight:600;line-height:1.3;max-width:1600px">Context rot: на 18 моделях качество всё менее надёжно с ростом длины входа — Chroma, 2025</p>
+</section>
+
+<section data-label="84 Три правила для ЛР1" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="95a7499d">
+<div style="position:absolute;top:38px;left:100px;display:flex;gap:10px"><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">перегрузка</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">противоречие</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);color:var(--wr);background:#fff">наводящий вопрос</span><span style="font-size:24px;font-weight:600;border-radius:8px;padding:4px 14px;border:2px solid var(--wr);background:var(--wr);color:#fff">грязный контекст</span></div>
+<lec-chrome b="9" n="9.4"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Три правила для ЛР1</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Чистите историю — модель опирается на всё, что в ней лежит.</p>
+<div style="margin-top:64px;display:flex;flex-direction:column;gap:36px;font-size:var(--t-body);line-height:1.3;max-width:1500px"><div style="display:flex;gap:24px;align-items:flex-start"><lec-i n="check" s="40" c="var(--ac)"></lec-i><span>Смена роли — очистить буфер, иначе стиль <code>/career</code> протекает в <code>/translate</code></span></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><lec-i n="check" s="40" c="var(--ac)"></lec-i><span>Ошибочный ответ — не тащить дальше</span></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><lec-i n="check" s="40" c="var(--ac)"></lec-i><span>Длинная история — сжать в краткое резюме</span></div>
+</div>
+</section>
+
+<section data-label="85 Какой паттерн выбрать, часть 1" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="55e81c5b">
+<lec-chrome b="10" n="10.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Какой паттерн выбрать, часть 1</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">Паттерн выбирают под класс задачи.</p>
+<div style="margin-top:48px"><div style="display:flex;flex-direction:column;font-size:30px;line-height:1.3">
+<div style="display:grid;grid-template-columns:1fr 1fr 520px;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span>Класс задачи</span><span>Паттерн</span><span>Пример из курса</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 520px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span>Роль и стиль ответа</span><span><b>R.C.T.F.</b> в системном промпте</span><span>роли ЛР1</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 520px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span>Разбор кейса с результатом</span><span><b>STAR</b></span><span><code>/career</code>, бизнес-задачи</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 520px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span>Нужен точный формат или набор меток</span><span><b>few-shot</b></span><span>Router ЛР3</span></div>
+<div style="display:grid;grid-template-columns:1fr 1fr 520px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span>Ответ читает код</span><span><b>structured output + Pydantic</b></span><span>Router ЛР3</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="86 Какой паттерн выбрать, часть 2" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="9aa2ce3a">
+<lec-chrome b="10" n="10.1"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Какой паттерн выбрать, часть 2</h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px">При неясной проблеме — тесты и мета-промптинг, а не перебор наугад.</p>
+<div style="margin-top:44px"><div style="display:flex;flex-direction:column;font-size:28px;line-height:1.3">
+<div style="display:grid;grid-template-columns:1fr 1.3fr 340px;gap:32px;padding:0 0 12px;font-size:24px;font-weight:600;color:#333"><span>Класс задачи</span><span>Паттерн</span><span>Пример из курса</span></div>
+<div style="display:grid;grid-template-columns:1fr 1.3fr 340px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span>Нужны внешние данные или действия</span><span><b>function calling + ReAct</b></span><span>инструменты ЛР2</span></div>
+<div style="display:grid;grid-template-columns:1fr 1.3fr 340px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span>Многошаговая логика</span><span><b>reasoning-модель</b>; без неё — CoT, при дорогой ошибке — self-consistency</span><span><code>/explain</code></span></div>
+<div style="display:grid;grid-template-columns:1fr 1.3fr 340px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln)"><span>Генерация кода</span><span><b>версия + контекст + пример + сборка и тесты</b></span><span>—</span></div>
+<div style="display:grid;grid-template-columns:1fr 1.3fr 340px;gap:32px;align-items:center;padding:16px 0;border-top:2px solid var(--ln);border-bottom:2px solid var(--ln)"><span>Промпт не работает и непонятно почему</span><span><b>мета-промптинг</b> против набора тестов</span><span>отчёт ЛР1</span></div>
+</div>
+</div>
+</section>
+
+<section data-label="87 Ответы на три вопроса" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="75d1c615">
+<lec-chrome b="10" n="10.2"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1">Ответы на три вопроса</h2>
+<div style="margin-top:48px;display:grid;grid-template-columns:repeat(3,1fr);gap:40px"><div style="border:2px solid var(--ln);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:22px"><span style="font-size:80px;font-weight:800;color:var(--ac);line-height:1">1</span><p style="margin:0;font-size:30px;font-weight:500;line-height:1.3">Как написать системный промпт, чтобы бот отвечал предсказуемо?</p><div style="height:2px;background:var(--ln)"></div><p style="margin:0;font-size:28px;font-weight:600;line-height:1.35;color:var(--ac)">R.C.T.F., примеры для формата, без перегрузки и противоречий, чистая история.</p></div>
+<div style="border:2px solid var(--ln);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:22px"><span style="font-size:80px;font-weight:800;color:var(--ac);line-height:1">2</span><p style="margin:0;font-size:30px;font-weight:500;line-height:1.3">Как получить от модели данные, которые код разберёт без ошибок?</p><div style="height:2px;background:var(--ln)"></div><p style="margin:0;font-size:28px;font-weight:600;line-height:1.35;color:var(--ac)">Схема в <code>response_format</code> или <code>tools</code>, <code>require_parameters</code>, проверка Pydantic, повтор с текстом ошибки.</p></div>
+<div style="border:2px solid var(--ln);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:22px"><span style="font-size:80px;font-weight:800;color:var(--ac);line-height:1">3</span><p style="margin:0;font-size:30px;font-weight:500;line-height:1.3">Как модель пишет код и почему он иногда не компилируется?</p><div style="height:2px;background:var(--ln)"></div><p style="margin:0;font-size:28px;font-weight:600;line-height:1.35;color:var(--ac)">Синтаксис и часть семантики модель выучила, но не компилирует: версия и контекст, проверка пакетов, сборка и тесты.</p></div>
+</div>
+</section>
+
+<section data-label="88 Что дальше и вопросы" style="background:#fff;color:#111;font-family:'Golos Text',system-ui,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;padding:140px 100px 110px" data-om-slide-id="e5ae6fd2">
+<lec-chrome b="10" n="10.3"></lec-chrome>
+<h2 style="margin:0;font-size:var(--t-title);font-weight:700;letter-spacing:-0.02em;line-height:1.1"><br></h2>
+<p style="margin:20px 0 0;font-size:var(--t-key);line-height:1.3;max-width:1640px"><br></p>
+<p style="margin:auto 0 0;font-size:200px;font-weight:800;letter-spacing:-0.04em;line-height:1;color:var(--ac)">Вопросы?</p>
+</section>
+
+</x-import>
+</x-dc>
+</body>
+</html>
