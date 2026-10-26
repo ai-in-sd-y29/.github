@@ -2,7 +2,7 @@
 [Лекция 2. Зоопарк моделей: типы, параметры, специализация](https://ai-in-sd-y29.github.io/.github/profile/lectures/2/)  
 [Лекция 3. Как устроена LLM: трансформер, attention, токены, поверхностный взгляд на GPU](https://ai-in-sd-y29.github.io/.github/profile/lectures/3/)    
 [Лекция 4. Промт-инжиниринг: паттерны, reasoning, мета-промптинг](https://ai-in-sd-y29.github.io/.github/profile/lectures/4/)  
-Лекция 5. Кодинг-агенты: модель P.M.A., управление контекстом  
+[Лекция 5. Кодинг-агенты: модель P.M.A., управление контекстом](https://ai-in-sd-y29.github.io/.github/profile/lectures/5/)  
 Лекция 6. Spec-driven development: AGENTS.md, конституция, антипаттерны  
 Лекция 7. MCP: Model Context Protocol — инструменты и ресурсы  
 Лекция 8. A2A и мульти-агентные системы  
